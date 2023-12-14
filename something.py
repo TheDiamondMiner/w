@@ -29,50 +29,54 @@ DISPLAY_HEIGHT = 32
 CHAR_WIDTH = 8  # Each character is approximately 8 pixels wide in the default font
 MAX_CHARS_PER_LINE = DISPLAY_WIDTH // CHAR_WIDTH
 
-# Function to print text on the OLED display
-def print_text_on_display(display, text):
+# Function to print text on the OLED display line by line
+def print_line_on_display(display, line):
     # Clear image buffer
     image = Image.new('1', (DISPLAY_WIDTH, DISPLAY_HEIGHT))
     draw = ImageDraw.Draw(image)
 
-    lines = text.splitlines()  # Split text into lines
-
     font = ImageFont.load_default()  # Load the default font
 
+    words = line.split()
+    current_line = 0
+    current_char_count = 0
+
+    for word in words:
+        word_length = len(word)
+
+        if current_char_count + word_length + 1 <= MAX_CHARS_PER_LINE:
+            draw.text((current_char_count * CHAR_WIDTH, current_line * 8), word, font=font, fill=255)
+            current_char_count += word_length + 1
+        else:
+            current_line += 1
+            current_char_count = 0
+
+            if current_line >= DISPLAY_HEIGHT // 8:
+                display.image(image)
+                display.display()
+                time.sleep(1)
+                disp.clear()
+                disp.display()
+                time.sleep(1)
+                break
+
+            draw.text((current_char_count * CHAR_WIDTH, current_line * 8), word, font=font, fill=255)
+            current_char_count += word_length + 1
+
+    display.image(image)
+    display.display()
+    time.sleep(1)
+
+# Function to display text paragraph line by line
+def print_text_on_display(display, text):
+    lines = text.splitlines()  # Split text into lines
     for line in lines:
-        words = line.split()
-        current_line = 0
-        current_char_count = 0
-
-        for word in words:
-            word_length = len(word)
-
-            if current_char_count + word_length + 1 <= MAX_CHARS_PER_LINE:
-                draw.text((current_char_count * CHAR_WIDTH, current_line * 8), word, font=font, fill=255)
-                current_char_count += word_length + 1
-            else:
-                current_line += 1
-                current_char_count = 0
-
-                if current_line >= DISPLAY_HEIGHT // 8:
-                    display.image(image)
-                    display.display()
-                    time.sleep(1)
-                    disp.clear()
-                    disp.display()
-                    time.sleep(1)
-                    break
-
-                draw.text((current_char_count * CHAR_WIDTH, current_line * 8), word, font=font, fill=255)
-                current_char_count += word_length + 1
-
-        display.image(image)
-        display.display()
+        print_line_on_display(display, line)
         time.sleep(1)
 
 # Example stats file to get text input
 stats_text = """
-this is a big paragraph to test the oled logic, i hope this works as if it does not then i am done for. Thank you everyone that helped in making this project a success and i reach natioanls. Steve kobs is such a nice guy.
+this is a big paragraph to test the oled logic, i hope this works as if it does not then i am done for. Thank you everyone that helped in making this project a success and i reach nationals. Steve Jobs is such a nice guy.
 """
 
 # Call the function with the stats text
