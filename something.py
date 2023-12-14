@@ -35,37 +35,40 @@ def print_text_on_display(display, text):
     image = Image.new('1', (DISPLAY_WIDTH, DISPLAY_HEIGHT))
     draw = ImageDraw.Draw(image)
 
-    words = text.split()
-
-    current_line = 0
-    current_char_count = 0
+    lines = text.splitlines()  # Split text into lines
 
     font = ImageFont.load_default()  # Load the default font
 
-    for word in words:
-        word_length = len(word)
-        
-        if current_char_count + word_length + 1 <= MAX_CHARS_PER_LINE:
-            draw.text((current_char_count * CHAR_WIDTH, current_line * 8), word, font=font, fill=255)
-            current_char_count += word_length + 1
-        else:
-            current_line += 1
-            current_char_count = 0
+    for line in lines:
+        words = line.split()
+        current_line = 0
+        current_char_count = 0
 
-            if current_line >= DISPLAY_HEIGHT // 8:
-                display.image(image)
-                display.display()
-                time.sleep(1)
-                current_line = 0
-                draw.rectangle((0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT), outline=0, fill=0)
-                print_text_on_display(display, ' '.join(words[words.index(word):]))
-                break
+        for word in words:
+            word_length = len(word)
 
-            draw.text((current_char_count * CHAR_WIDTH, current_line * 8), word, font=font, fill=255)
-            current_char_count += word_length + 1
+            if current_char_count + word_length + 1 <= MAX_CHARS_PER_LINE:
+                draw.text((current_char_count * CHAR_WIDTH, current_line * 8), word, font=font, fill=255)
+                current_char_count += word_length + 1
+            else:
+                current_line += 1
+                current_char_count = 0
 
-    display.image(image)
-    display.display()
+                if current_line >= DISPLAY_HEIGHT // 8:
+                    display.image(image)
+                    display.display()
+                    time.sleep(1)
+                    disp.clear()
+                    disp.display()
+                    time.sleep(1)
+                    break
+
+                draw.text((current_char_count * CHAR_WIDTH, current_line * 8), word, font=font, fill=255)
+                current_char_count += word_length + 1
+
+        display.image(image)
+        display.display()
+        time.sleep(1)
 
 # Example stats file to get text input
 stats_text = """
