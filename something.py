@@ -7,28 +7,6 @@ from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
 
-# Raspberry Pi pin configuration:
-RST = None  # on the PiOLED this pin isn't used
-DC = 23
-SPI_PORT = 0
-SPI_DEVICE = 0
-
-# Initialize the SSD1306 OLED display
-disp = Adafruit_SSD1306.SSD1306_128_32(rst=RST)
-
-# Initialize library
-disp.begin()
-
-# Clear display
-disp.clear()
-disp.display()
-
-# Constants for OLED display
-DISPLAY_WIDTH = 128
-DISPLAY_HEIGHT = 32
-CHAR_WIDTH = 8  # Each character is approximately 8 pixels wide in the default font
-MAX_CHARS_PER_LINE = DISPLAY_WIDTH // CHAR_WIDTH
-
 # Function to print text on the OLED display
 def print_text_on_display(display, text):
     display.clear()
@@ -60,6 +38,28 @@ def print_text_on_display(display, text):
             current_char_count += word_length + 1
 
         display.display()
+
+# Raspberry Pi pin configuration:
+RST = None  # on the PiOLED this pin isn't used
+DC = 23
+SPI_PORT = 0
+SPI_DEVICE = 0
+
+# Initialize the SSD1306 OLED display
+disp = Adafruit_SSD1306.SSD1306_128_32(rst=RST)
+
+# Initialize library
+disp.begin()
+
+# Clear display
+disp.clear()
+disp.display()
+
+# Constants for OLED display
+DISPLAY_WIDTH = 128
+DISPLAY_HEIGHT = 32
+CHAR_WIDTH = 8  # Each character is approximately 8 pixels wide in the default font
+MAX_CHARS_PER_LINE = DISPLAY_WIDTH // CHAR_WIDTH
 
 # Example stats file to get text input
 stats_text = """
